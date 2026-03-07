@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PXCV9TCODES — SkinApe & Roblox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0c15;
+      --bg2: #13101f;
+      --surface: #1a1628;
+      --surface2: #201c30;
+      --border: #2a2440;
+      --text: #ffffff;
+      --muted: #8b84a8;
+      --purple: #7c3aed;
+      --purple-light: #9d6bf5;
+      --purple-dim: rgba(124,58,237,0.15);
+      --purple-glow: rgba(124,58,237,0.3);
+      --accent-skin: #f5a623;
+      --accent-roblox: #e8574a;
+      --accent-green: #4ade80;
+      --font: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Stars background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.1) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.12) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.08) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 35%, rgba(255,255,255,0.1) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 20% 90%, rgba(255,255,255,0.07) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.09) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.11) 0%, transparent 100%),
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(14,12,21,0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo-icon {
+      width: 28px; height: 28px;
+      background: var(--purple);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .nav-logo span { color: var(--purple-light); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .lang-toggle {
+      display: flex;
+      gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .lang-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      background: var(--purple-dim);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 100px;
+      padding: 6px 14px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--purple-light);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 9vw, 96px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.25s;
+    }
+    .hero h1 .purple { color: var(--purple-light); }
+    .hero h1 .skin { color: var(--accent-skin); }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.55s;
+    }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-purple {
+      background: var(--purple);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(124,58,237,0.4);
+    }
+    .btn-purple:hover {
+      background: var(--purple-light);
+      transform: translateY(-1px);
+      box-shadow: 0 0 32px rgba(124,58,237,0.6);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--purple); color: var(--text); }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 72px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.7s;
+      position: relative;
+      z-index: 1;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      line-height: 1.15;
+    }
+
+    /* CARDS GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-glow), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover { border-color: rgba(124,58,237,0.4); transform: translateY(-2px); }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+    .icon-skin { background: rgba(245,166,35,0.15); }
+    .icon-roblox { background: rgba(232,87,74,0.15); }
+
+    .card-platform {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot-skin { background: var(--accent-skin); }
+    .dot-roblox { background: var(--accent-roblox); }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    /* CODE BOX */
+    .code-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .code-value {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: var(--accent-green);
+      letter-spacing: 0.05em;
+      flex: 1;
+    }
+    .copy-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      background: var(--purple-dim);
+      border: 1px solid rgba(124,58,237,0.3);
+      color: var(--purple-light);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .copy-btn.copied { background: rgba(74,222,128,0.15); color: var(--accent-green); border-color: rgba(74,222,128,0.3); }
+
+    /* ITEM PREVIEW STATIC */
+    .item-preview-static {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .preview-img-static {
+      width: 80px; height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--surface2);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .preview-info-static { display: flex; flex-direction: column; gap: 5px; }
+    .preview-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .preview-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .preview-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple-light);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .preview-link:hover { opacity: 0.75; }
+
+    /* BONUS BANNER */
+    .bonus-banner {
+      position: relative;
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 56px;
+      overflow: hidden;
+      background: var(--purple-dim);
+    }
+    .bonus-glow {
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(124,58,237,0.2), transparent 70%);
+      pointer-events: none;
+    }
+    .bonus-inner { display: flex; align-items: flex-start; gap: 20px; position: relative; }
+    .bonus-icon { font-size: 32px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .bonus-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--purple-light);
+      letter-spacing: -0.01em;
+    }
+    .bonus-sub { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 560px; }
+
+    /* STEPS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s;
+    }
+    .step:hover { border-color: rgba(124,58,237,0.4); }
+    .step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple-light);
+      letter-spacing: 0.1em;
+      background: var(--purple-dim);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 6px;
+      padding: 3px 8px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .step-text { font-size: 15px; font-weight: 700; line-height: 1.3; }
+    .step-sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* CHANNEL BANNER */
+    .channel-banner {
+      position: relative;
+      border: 1px solid rgba(124,58,237,0.4);
+      border-radius: 20px;
+      padding: 36px 40px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(124,58,237,0.04));
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .channel-glow {
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(124,58,237,0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .channel-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .channel-icon { font-size: 40px; flex-shrink: 0; }
+    .channel-text { flex: 1; min-width: 200px; }
+    .channel-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .channel-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+    .channel-btn { white-space: nowrap; flex-shrink: 0; }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-support { color: var(--purple-light) !important; border: 1px solid rgba(124,58,237,0.3); border-radius: 8px; padding: 5px 12px; background: var(--purple-dim); transition: all 0.2s !important; }
+    .footer-support:hover { background: var(--purple) !important; color: #fff !important; border-color: var(--purple) !important; }
+
+    /* REVEAL */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 640px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+      section { padding: 72px 20px; }
+      .stats { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-logo-icon">⚡</div>
+      <span>PXCV9T</span>CODES
+    </div>
+    <ul class="nav-links">
+      <li><a href="#codes" data-i18n="nav-codes">Коды</a></li>
+      <li><a href="#how" data-i18n="nav-how">Как использовать</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-tag" data-i18n="hero-tag">Реферальные коды и промо</p>
+    <h1>
+      <span class="skin">SkinApe</span><br>
+      <span data-i18n="hero-and">&</span>
+      <span class="purple"> Roblox</span>
+    </h1>
+    <p class="hero-desc" data-i18n="hero-desc">
+      Бесплатные промо-коды и реферальные ссылки. Получи награды прямо сейчас.
+    </p>
+    <div class="hero-actions">
+      <a href="https://get.robux.skinape.com/3WNUWNHG" target="_blank" rel="noopener" class="btn btn-purple" data-i18n="hero-cta1">Получить коды →</a>
+      <a onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" class="btn btn-ghost" style="cursor:pointer" data-i18n="hero-cta2">Как это работает</a>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label" data-i18n="stat1">Бесплатно</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label" data-i18n="stat2">Платформы</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label" data-i18n="stat3">Доступно</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CODES SECTION -->
+  <section id="codes">
+    <p class="section-label reveal" data-i18n="codes-label">Промо коды</p>
+    <h2 class="section-title reveal" data-i18n="codes-title">Активируй и получи награду</h2>
+
+    <div class="cards-grid reveal">
+
+      <!-- SkinApe Referral -->
+      <div class="card">
+        <div class="card-icon icon-skin">🦍</div>
+        <div class="card-platform">
+          <span class="dot dot-skin"></span>
+          <span style="color:var(--accent-skin)">SkinApe</span>
+          <span style="color:var(--muted)" data-i18n="type-ref">· Реферал</span>
+        </div>
+        <div class="card-title" data-i18n="skinape-ref-title">Реферальная ссылка</div>
+        <div class="card-desc" data-i18n="skinape-ref-desc">Эксклюзивная ссылка от SkinApe, созданная специально для блогера. Даёт значительно больше монет, чем стандартная регистрация — лимитированный оффер, доступный только здесь.</div>
+        <div class="code-box">
+          <span class="code-value" id="skinape-ref-val" style="font-size:11px;word-break:break-all">https://get.robux.skinape.com/3WNUWNHG</span>
+          <button class="copy-btn" onclick="copyCode('skinape-ref-val', this)" data-i18n="copy">Копировать</button>
+        </div>
+      </div>
+
+      <!-- SkinApe Promo -->
+      <div class="card">
+        <div class="card-icon icon-skin">💰</div>
+        <div class="card-platform">
+          <span class="dot dot-skin"></span>
+          <span style="color:var(--accent-skin)">SkinApe</span>
+          <span style="color:var(--muted)" data-i18n="type-promo">· Промо</span>
+        </div>
+        <div class="card-title" data-i18n="skinape-promo-title">Промо-код</div>
+        <div class="card-desc" data-i18n="skinape-promo-desc">Просто вставь код при регистрации и забирай бонусные монеты. Быстро, бесплатно, без лишних действий.</div>
+        <div class="code-box">
+          <span class="code-value" id="skinape-promo-val">3WNUWNHG</span>
+          <button class="copy-btn" onclick="copyCode('skinape-promo-val', this)" data-i18n="copy">Копировать</button>
+        </div>
+      </div>
+
+      <!-- Roblox Bonus -->
+      <div class="card">
+        <div class="card-icon icon-roblox">🎮</div>
+        <div class="card-platform">
+          <span class="dot dot-roblox"></span>
+          <span style="color:var(--accent-roblox)">Roblox</span>
+          <span style="color:var(--muted)" data-i18n="type-promo">· Промо</span>
+        </div>
+        <div class="card-title" data-i18n="roblox-code2-title">Бонусный промо-код</div>
+        <div class="card-desc" data-i18n="roblox-code2-desc">Активируй в Roblox и получи эксклюзивный предмет на свой аккаунт — совершенно бесплатно.</div>
+
+        <div class="item-preview-static">
+          <img src="data:image/jpeg;base64,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" alt="Spider Cola" class="preview-img-static" />
+          <div class="preview-info-static">
+            <span class="preview-name">Spider Cola</span>
+            <span class="preview-sub">Уникальный аксессуар для аватара</span>
+            <a href="https://www.roblox.com/redeem" target="_blank" rel="noopener" class="preview-link" data-i18n="preview-link">Открыть в Roblox →</a>
+          </div>
+        </div>
+
+        <div class="code-box">
+          <span class="code-value" id="roblox-code2-val">SPIDERCOLA</span>
+          <button class="copy-btn" onclick="copyCode('roblox-code2-val', this)" data-i18n="copy">Копировать</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <p class="section-label reveal" data-i18n="how-label">Инструкция</p>
+    <h2 class="section-title reveal" data-i18n="how-title">Как использовать коды</h2>
+
+    <div class="bonus-banner reveal">
+      <div class="bonus-glow"></div>
+      <div class="bonus-inner">
+        <div class="bonus-icon">🎁</div>
+        <div>
+          <div class="bonus-title" data-i18n="bonus-title">Массивный бонус при активации</div>
+          <div class="bonus-sub" data-i18n="bonus-sub">Не важно, новый ты пользователь или нет — промокод работает для всех и даёт серьёзный буст прямо при активации.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-num">01</span>
+        <div class="step-text" data-i18n="step1-title">Переходи по ссылке</div>
+        <div class="step-sub" data-i18n="step1-desc">Нажми «Получить коды» и установи SkinApe — это займёт меньше минуты.</div>
+      </div>
+      <div class="step reveal">
+        <span class="step-num">02</span>
+        <div class="step-text" data-i18n="step2-title">Введи промокод</div>
+        <div class="step-sub" data-i18n="step2-desc">В приложении найди раздел промо-кодов и введи код из секции выше.</div>
+      </div>
+      <div class="step reveal">
+        <span class="step-num">03</span>
+        <div class="step-text" data-i18n="step3-title">Получи мгновенный бонус</div>
+        <div class="step-sub" data-i18n="step3-desc">Бонус зачисляется сразу — монеты, скины или внутриигровые предметы.</div>
+      </div>
+      <div class="step reveal">
+        <span class="step-num">04</span>
+        <div class="step-text" data-i18n="step4-title">Работает для всех</div>
+        <div class="step-sub" data-i18n="step4-desc">Новый аккаунт или нет — промокод активируется и даёт максимальный бонус.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANNEL BANNER -->
+  <section style="padding: 60px 24px;">
+    <div class="channel-banner">
+      <div class="channel-glow"></div>
+      <div class="channel-inner">
+        <div class="channel-icon">📢</div>
+        <div class="channel-text">
+          <div class="channel-title" data-i18n="channel-title">Наш Telegram канал</div>
+          <div class="channel-desc" data-i18n="channel-desc">В канале намного больше промокодов, чем на сайте — эксклюзивные коды, обновления и бонусы выходят там первыми.</div>
+        </div>
+        <a href="https://t.me/skinaperoblox" target="_blank" rel="noopener" class="btn btn-purple channel-btn" data-i18n="channel-btn">Перейти в канал →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="bottom">
+    <span class="footer-copy" data-i18n="footer-copy">© 2025 PXCV9TCODES. Все права защищены.</span>
+    <div class="footer-links">
+      <a href="https://skinape.com" target="_blank" rel="noopener">SkinApe</a>
+      <a href="https://roblox.com" target="_blank" rel="noopener">Roblox</a>
+      <a href="https://t.me/PACBET_CBATEPOB" target="_blank" rel="noopener" class="footer-support" data-i18n="support">🛠 Тех. поддержка</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── I18N ───────────────────────────────────────────
+    const translations = {
+      ru: {
+        'nav-codes': 'Коды',
+        'nav-how': 'Как использовать',
+        'hero-tag': 'Реферальные коды и промо',
+        'hero-and': '&',
+        'hero-desc': 'Бесплатные промо-коды и реферальные ссылки. Получи награды прямо сейчас.',
+        'hero-cta1': 'Получить коды →',
+        'hero-cta2': 'Как это работает',
+        'stat1': 'Бесплатно',
+        'stat2': 'Платформы',
+        'stat3': 'Доступно',
+        'codes-label': 'Промо коды',
+        'codes-title': 'Активируй и получи награду',
+        'type-ref': '· Реферал',
+        'type-promo': '· Промо',
+        'skinape-ref-title': 'Реферальная ссылка',
+        'skinape-ref-desc': 'Эксклюзивная ссылка от SkinApe, созданная специально для блогера. Даёт значительно больше монет, чем стандартная регистрация — лимитированный оффер, доступный только здесь.',
+        'skinape-promo-title': 'Промо-код',
+        'skinape-promo-desc': 'Просто вставь код при регистрации и забирай бонусные монеты. Быстро, бесплатно, без лишних действий.',
+        'roblox-code2-title': 'Бонусный промо-код',
+        'roblox-code2-desc': 'Активируй в Roblox и получи эксклюзивный предмет на свой аккаунт — совершенно бесплатно.',
+        'preview-link': 'Открыть в Roblox →',
+        'copy': 'Копировать',
+        'how-label': 'Инструкция',
+        'how-title': 'Как использовать коды',
+        'bonus-title': 'Массивный бонус при активации',
+        'bonus-sub': 'Не важно, новый ты пользователь или нет — промокод работает для всех и даёт серьёзный буст прямо при активации.',
+        'step1-title': 'Переходи по ссылке',
+        'step1-desc': 'Нажми «Получить коды» и установи SkinApe — это займёт меньше минуты.',
+        'step2-title': 'Введи промокод',
+        'step2-desc': 'В приложении найди раздел промо-кодов и введи код из секции выше.',
+        'step3-title': 'Получи мгновенный бонус',
+        'step3-desc': 'Бонус зачисляется сразу — монеты, скины или внутриигровые предметы.',
+        'step4-title': 'Работает для всех',
+        'step4-desc': 'Новый аккаунт или нет — промокод активируется и даёт максимальный бонус.',
+        'channel-title': 'Наш Telegram канал',
+        'channel-desc': 'В канале намного больше промокодов, чем на сайте — эксклюзивные коды, обновления и бонусы выходят там первыми.',
+        'channel-btn': 'Перейти в канал →',
+        'footer-copy': '© 2025 PXCV9TCODES. Все права защищены.',
+        'support': '🛠 Тех. поддержка',
+      },
+      en: {
+        'nav-codes': 'Codes',
+        'nav-how': 'How it works',
+        'hero-tag': 'Referral Codes & Promos',
+        'hero-and': '&',
+        'hero-desc': 'Free promo codes and referral links. Claim your rewards right now.',
+        'hero-cta1': 'Get Codes →',
+        'hero-cta2': 'How it works',
+        'stat1': 'Free',
+        'stat2': 'Platforms',
+        'stat3': 'Available',
+        'codes-label': 'Promo Codes',
+        'codes-title': 'Activate & Claim Your Reward',
+        'type-ref': '· Referral',
+        'type-promo': '· Promo',
+        'skinape-ref-title': 'Referral Link',
+        'skinape-ref-desc': 'An exclusive link created by SkinApe specifically for this creator. Grants significantly more coins than a standard sign-up — a limited offer only available here.',
+        'skinape-promo-title': 'Promo Code',
+        'skinape-promo-desc': 'Just paste the code at sign-up and grab your bonus coins. Quick, free, no extra steps.',
+        'roblox-code2-title': 'Bonus Promo Code',
+        'roblox-code2-desc': 'Activate in Roblox and get an exclusive item on your account — completely free.',
+        'preview-link': 'Open in Roblox →',
+        'copy': 'Copy',
+        'how-label': 'Guide',
+        'how-title': 'How to Use the Codes',
+        'bonus-title': 'Massive Bonus on Activation',
+        'bonus-sub': 'New user or not — the promo code works for everyone and gives you a serious boost the moment you activate it.',
+        'step1-title': 'Follow the Link',
+        'step1-desc': 'Click "Get Codes" and install SkinApe — it takes less than a minute.',
+        'step2-title': 'Enter the Promo Code',
+        'step2-desc': 'In the app, find the promo code section and enter the code from above.',
+        'step3-title': 'Get Your Instant Bonus',
+        'step3-desc': 'The bonus is credited immediately — coins, skins, or in-game items.',
+        'step4-title': 'Works for Everyone',
+        'step4-desc': 'New account or not — the code activates and delivers the maximum bonus.',
+        'channel-title': 'Our Telegram Channel',
+        'channel-desc': 'The channel has way more promo codes than the website — exclusive codes, updates and bonuses drop there first.',
+        'channel-btn': 'Join the channel →',
+        'footer-copy': '© 2025 PXCV9TCODES. All rights reserved.',
+        'support': '🛠 Support',
+      }
+    };
+
+    let currentLang = 'ru';
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+      });
+    }
+
+    function copyCode(id, btn) {
+      const text = document.getElementById(id).textContent.trim();
+      navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+      const original = btn.textContent;
+      btn.textContent = currentLang === 'ru' ? 'Скопировано!' : 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
