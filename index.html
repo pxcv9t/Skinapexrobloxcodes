@@ -1448,47 +1448,49 @@
       } catch(e) {}
     }
 
-    // ─── БАГ 2 FIX: Одноразовые ключи через Anthropic API ───────────────────
-    // Используем Claude как сервер — он хранит список использованных ключей
-    const API_URL = 'https://api.anthropic.com/v1/messages';
+    // ─── SUPABASE — одноразовые ключи ───────────────────────────────────────
+    const SB_URL = 'https://grjwfvquyjqwxgbbqoog.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdyandmdnF1eWpxd3hnYmJxb29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMzMyNDMsImV4cCI6MjA4ODYwOTI0M30.g9rxngYgwLufv9enCySNGKcO71BoJKwLWSVUcFSRAxk';
 
     async function checkAndUseKey(val) {
       const btn = document.querySelector('.premium-btn');
       if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
 
       try {
-        // Спрашиваем Claude — использован ли ключ
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 100,
-            system: `You are a key validation server for site PXCV9TCODES.
-You maintain a list of used premium keys in your memory for this conversation.
-When asked to check a key, respond ONLY with JSON: {"used": true/false}
-Track keys that have been marked as used. A key becomes used after first successful activation.
-Used keys so far in this session: stored in your context.`,
-            messages: [{ role: 'user', content: `Check if key "${val}" has been used before. If not used, mark it as used now. Respond only JSON.` }]
-          })
-        });
-
-        const data = await res.json();
-        const text = data.content?.[0]?.text || '{}';
-        let parsed = {};
-        try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch(e) {}
+        // Проверяем — есть ли ключ уже в таблице used_keys
+        const checkRes = await fetch(
+          SB_URL + '/rest/v1/used_keys?key=eq.' + encodeURIComponent(val) + '&select=key',
+          {
+            headers: {
+              'apikey': SB_KEY,
+              'Authorization': 'Bearer ' + SB_KEY
+            }
+          }
+        );
+        const rows = await checkRes.json();
 
         if (btn) { btn.disabled = false; btn.textContent = currentLang === 'ru' ? 'Активировать' : 'Activate'; }
 
-        if (parsed.used === true) {
+        if (Array.isArray(rows) && rows.length > 0) {
+          // Ключ уже использован
           showUsed();
         } else {
-          // Сохраняем локально что этот браузер активировал
+          // Ключ свежий — записываем в базу
+          await fetch(SB_URL + '/rest/v1/used_keys', {
+            method: 'POST',
+            headers: {
+              'apikey': SB_KEY,
+              'Authorization': 'Bearer ' + SB_KEY,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({ key: val })
+          });
           try { localStorage.setItem('pxcv9t_premium', '1'); } catch(e) {}
           unlockPremium();
         }
       } catch(e) {
-        // API недоступен — fallback: проверяем только localStorage
+        // Supabase недоступен — fallback на localStorage
         if (btn) { btn.disabled = false; btn.textContent = currentLang === 'ru' ? 'Активировать' : 'Activate'; }
         try {
           const localUsed = localStorage.getItem('pxcv9t_used_' + val);
@@ -1499,9 +1501,7 @@ Used keys so far in this session: stored in your context.`,
             localStorage.setItem('pxcv9t_premium', '1');
             unlockPremium();
           }
-        } catch(e2) {
-          unlockPremium();
-        }
+        } catch(e2) { unlockPremium(); }
       }
     }
 
