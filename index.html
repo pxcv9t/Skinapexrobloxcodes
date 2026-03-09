@@ -29,6 +29,8 @@
       --font: 'Space Grotesk', 'Inter', sans-serif;
     }
 
+    
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -184,7 +186,7 @@
       animation: fadeUp 0.6s ease forwards 0.25s;
     }
     .hero h1 .purple { background: linear-gradient(90deg, #818cf8, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero h1 .skin { color: #f5a623; }
+    .hero h1 .skin { background: linear-gradient(90deg, #f5a623, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     .hero-desc {
       font-size: 17px;
@@ -240,25 +242,61 @@
     /* STATS */
     .stats {
       display: flex;
-      gap: 48px;
+      flex-direction: row;
+      align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 72px;
+      gap: 36px;
+      margin-top: 52px;
       opacity: 0;
       animation: fadeUp 0.6s ease forwards 0.7s;
       position: relative;
       z-index: 1;
     }
-    .stat { text-align: center; }
-    .stat-num {
-      font-size: 32px;
-      font-weight: 700;
-      background: linear-gradient(90deg, #818cf8, #22d3ee);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
+    .stat-item {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
     }
-    .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .stat-dot {
+      color: rgba(99,102,241,0.4);
+      font-size: 14px;
+      line-height: 1;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .stat:nth-child(1) { animation-delay: 0.8s; }
+    .stat:nth-child(2) { animation-delay: 1.0s; }
+    .stat:nth-child(3) { animation-delay: 1.2s; }
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(167,139,250,0.18), rgba(96,165,250,0.14));
+      border: 1px solid rgba(167,139,250,0.4);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(139,92,246,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: all 0.3s;
+    }
+    .stat:hover .stat-icon {
+      background: linear-gradient(135deg, rgba(167,139,250,0.32), rgba(96,165,250,0.22));
+      border-color: rgba(167,139,250,0.75);
+      box-shadow: 0 0 28px rgba(139,92,246,0.5), 0 0 56px rgba(96,165,250,0.15);
+      transform: translateY(-2px);
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
 
     /* DIVIDER */
     .divider {
@@ -451,7 +489,16 @@
       pointer-events: none;
     }
     .bonus-inner { display: flex; align-items: flex-start; gap: 20px; position: relative; }
-    .bonus-icon { font-size: 32px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .bonus-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(34,211,238,0.06));
+      border: 1px solid rgba(99,102,241,0.18);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(99,102,241,0.12);
+    }
     .bonus-title {
       font-size: 18px; font-weight: 700;
       background: linear-gradient(90deg, #818cf8, #22d3ee);
@@ -742,6 +789,35 @@
       display: flex; align-items: center; justify-content: center;
       margin-bottom: 18px;
     }
+
+    /* MAIN TAB — уникальные иконки */
+    .card-icon-main {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(34,211,238,0.06));
+      border: 1px solid rgba(99,102,241,0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+      position: relative;
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    .card:hover .card-icon-main {
+      border-color: rgba(99,102,241,0.4);
+      box-shadow: 0 0 24px rgba(99,102,241,0.15);
+    }
+    .card-icon-main::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(129,140,248,0.3), rgba(34,211,238,0.15));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      pointer-events: none;
+    }
+
     /* CODES TOOLBAR */
     .codes-toolbar {
       display: flex;
@@ -877,13 +953,21 @@
     footer {
       position: relative;
       z-index: 1;
-      border-top: 1px solid rgba(99,102,241,0.08);
-      padding: 28px 40px;
+      border-top: 1px solid rgba(99,102,241,0.1);
+      padding: 32px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
+      background: linear-gradient(180deg, transparent, rgba(99,102,241,0.03));
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.25), rgba(34,211,238,0.15), transparent);
     }
     .footer-copy { font-size: 13px; color: var(--muted); }
     .footer-links { display: flex; gap: 24px; }
@@ -948,6 +1032,28 @@
 </style>
 </head>
 <body>
+  <!-- ADMIN BROADCAST BANNER -->
+  <div id="admin-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;padding:0 16px;pointer-events:none;">
+    <div id="admin-banner-inner" style="
+      max-width:600px;margin:12px auto;
+      background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(34,211,238,0.9));
+      border-radius:14px;padding:14px 20px;
+      display:flex;align-items:center;gap:12px;
+      box-shadow:0 8px 32px rgba(99,102,241,0.4),0 2px 8px rgba(0,0,0,0.3);
+      backdrop-filter:blur(12px);
+      animation:bannerIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      pointer-events:auto;
+    ">
+      <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;flex-shrink:0;box-shadow:0 0 8px #fff;animation:pulse 2s infinite;"></div>
+      <span id="admin-banner-text" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:#fff;flex:1;line-height:1.4;"></span>
+      <div id="admin-banner-timer" style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);min-width:20px;text-align:right;"></div>
+    </div>
+  </div>
+  <style>
+    @keyframes bannerIn { from{opacity:0;transform:translateY(-20px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes bannerOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(-16px) scale(0.96)} }
+  </style>
+
 
   <!-- NAV -->
   <nav>
@@ -986,16 +1092,22 @@
     </div>
     <div class="stats">
       <div class="stat">
-        <div class="stat-num">100%</div>
-        <div class="stat-label" data-i18n="stat1">Бесплатно</div>
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#si1)" stroke-width="1.8" stroke-linecap="round"><defs><linearGradient id="si1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span class="stat-label" data-i18n="stat1">Бесплатно</span>
       </div>
       <div class="stat">
-        <div class="stat-num">2</div>
-        <div class="stat-label" data-i18n="stat2">Платформы</div>
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#si2)" stroke-width="1.8" stroke-linecap="round"><defs><linearGradient id="si2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="stat-label" data-i18n="stat3">Мгновенно</span>
       </div>
       <div class="stat">
-        <div class="stat-num">24/7</div>
-        <div class="stat-label" data-i18n="stat3">Доступно</div>
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#si3)" stroke-width="1.8" stroke-linecap="round"><defs><linearGradient id="si3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <span class="stat-label" data-i18n="stat4">Открыто всем</span>
       </div>
     </div>
   </div>
@@ -1039,7 +1151,18 @@
 
       <!-- SkinApe Referral -->
       <div class="card">
-        <div class="card-icon icon-skin">🦍</div>
+        <div class="card-icon-main">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="mi1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#818cf8"/>
+                <stop offset="100%" stop-color="#22d3ee"/>
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="9" stroke="url(#mi1)" stroke-width="1.5"/>
+            <path d="M8 12h8M13 8l4 4-4 4" stroke="url(#mi1)" stroke-width="1.8"/>
+          </svg>
+        </div>
         <div class="card-platform">
           <span class="dot dot-skin"></span>
           <span style="color:#818cf8">SkinApe</span>
@@ -1055,7 +1178,19 @@
 
       <!-- SkinApe Promo -->
       <div class="card">
-        <div class="card-icon icon-skin">💰</div>
+        <div class="card-icon-main">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="mi2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#818cf8"/>
+                <stop offset="100%" stop-color="#22d3ee"/>
+              </linearGradient>
+            </defs>
+            <path d="M3 7h18M3 12h18M3 17h12" stroke="url(#mi2)" stroke-width="1.5"/>
+            <circle cx="19" cy="17" r="3" stroke="url(#mi2)" stroke-width="1.5"/>
+            <path d="M19 15.5v1.5l1 1" stroke="url(#mi2)" stroke-width="1.5"/>
+          </svg>
+        </div>
         <div class="card-platform">
           <span class="dot dot-skin"></span>
           <span style="color:#818cf8">SkinApe</span>
@@ -1233,7 +1368,16 @@
     <div class="bonus-banner reveal">
       <div class="bonus-glow"></div>
       <div class="bonus-inner">
-        <div class="bonus-icon">🎁</div>
+        <div class="bonus-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#bg1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs>
+            <polyline points="20 12 20 22 4 22 4 12"/>
+            <rect x="2" y="7" width="20" height="5"/>
+            <line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
         <div>
           <div class="bonus-title" data-i18n="bonus-title">Массивный бонус при активации</div>
           <div class="bonus-sub" data-i18n="bonus-sub">Не важно, новый ты пользователь или нет — промокод работает для всех и даёт серьёзный буст прямо при активации.</div>
@@ -1335,8 +1479,8 @@
         'hero-cta1': 'Получить коды →',
         'hero-cta2': 'Как это работает',
         'stat1': 'Бесплатно',
-        'stat2': 'Платформы',
-        'stat3': 'Доступно',
+        'stat3': 'Мгновенно',
+        'stat4': 'Открыто всем',
         'codes-label': 'Промо коды',
         'codes-title': 'Активируй и получи награду',
         'tab-main': '⭐ Основные',
@@ -1391,8 +1535,8 @@
         'hero-cta1': 'Get Codes →',
         'hero-cta2': 'How it works',
         'stat1': 'Free',
-        'stat2': 'Platforms',
-        'stat3': 'Available',
+        'stat3': 'Instant',
+        'stat4': 'Open to all',
         'codes-label': 'Promo Codes',
         'codes-title': 'Activate & Claim Your Reward',
         'tab-main': '⭐ Featured',
@@ -1646,6 +1790,59 @@
       if (e.key === 'Enter') activatePremium();
     });
 
+
+
+    // ─── ADMIN BROADCAST BANNER ──────────────────────────
+
+    let _lastShownId = null;
+
+    async function checkAdminBanner() {
+      try {
+        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=id,message,created_at&order=created_at.desc&limit=1', {
+          headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+        });
+        const rows = await res.json();
+        if (!Array.isArray(rows) || rows.length === 0) return;
+
+        const row = rows[0];
+        // Не показывать уже показанное
+        if (row.id === _lastShownId) return;
+
+        const age = (Date.now() - new Date(row.created_at).getTime()) / 1000;
+        if (age > 120) return; // Показываем только свежие (< 2 мин)
+
+        _lastShownId = row.id;
+        showAdminBanner(row.message);
+      } catch(e) {}
+    }
+
+    function showAdminBanner(msg) {
+      const banner = document.getElementById('admin-banner');
+      const text = document.getElementById('admin-banner-text');
+      const timer = document.getElementById('admin-banner-timer');
+      if (!banner || !msg) return;
+
+      text.textContent = msg;
+      banner.style.display = 'block';
+
+      let secs = 11;
+      timer.textContent = secs;
+      const iv = setInterval(() => {
+        secs--;
+        timer.textContent = secs;
+        if (secs <= 0) {
+          clearInterval(iv);
+          const inner = document.getElementById('admin-banner-inner');
+          inner.style.animation = 'bannerOut 0.35s ease forwards';
+          setTimeout(() => { banner.style.display = 'none'; }, 350);
+        }
+      }, 1000);
+    }
+
+    // Проверять каждые 8 секунд
+    checkAdminBanner();
+    setInterval(checkAdminBanner, 8000);
+
     // ─── FAKE ONLINE ─────────────────────────────────────
     const onlineEl = document.getElementById('online-count');
     let onlineNum = Math.floor(Math.random() * 6) + 7; // 7-12 при загрузке
@@ -1713,4 +1910,4 @@
     restorePremium();
   </script>
 </body>
-                                         </html>
+  </html>
