@@ -1798,18 +1798,21 @@
 
     async function checkAdminBanner() {
       try {
-        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=id,message,created_at&order=created_at.desc&limit=1', {
+        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=id,message&order=id.desc&limit=1', {
           headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
         });
+        if (!res.ok) return;
         const rows = await res.json();
         if (!Array.isArray(rows) || rows.length === 0) return;
 
         const row = rows[0];
-        // Не показывать уже показанное
         if (row.id === _lastShownId) return;
 
-        const age = (Date.now() - new Date(row.created_at).getTime()) / 1000;
-        if (age > 120) return; // Показываем только свежие (< 2 мин)
+        // Первый запуск — запомнить текущий id но не показывать старые
+        if (_lastShownId === null) {
+          _lastShownId = row.id;
+          return;
+        }
 
         _lastShownId = row.id;
         showAdminBanner(row.message);
