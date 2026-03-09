@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — PXCV9TCODES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050510;
+      --surface: rgba(255,255,255,0.03);
+      --border: rgba(99,102,241,0.15);
+      --text: #f0f0ff;
+      --muted: #4a4a7a;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --cyan: #22d3ee;
+      --green: #4ade80;
+      --red: #f43f5e;
+      --font: 'Space Grotesk', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 20%, rgba(99,102,241,0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(34,211,238,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #4f46e5, #0891b2);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(99,102,241,0.4);
+    }
+    .logo span { background: linear-gradient(90deg, #818cf8, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .login-card {
+      width: 100%;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .field input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .field input:focus {
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    .field input.error {
+      border-color: rgba(244,63,94,0.5);
+      animation: shake 0.4s ease;
+    }
+
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(90deg, #4f46e5, #0891b2);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .btn-login:hover { opacity: 0.9; }
+    .btn-login:active { transform: scale(0.99); }
+
+    .error-msg {
+      font-size: 12px;
+      color: var(--red);
+      text-align: center;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    /* ── ADMIN PANEL ── */
+    #admin-panel {
+      display: none;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .panel-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 100px;
+      padding: 4px 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .panel-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+    }
+
+    .panel-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--accent-light);
+      letter-spacing: 0.02em;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      resize: none;
+      min-height: 90px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea:focus {
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+    textarea::placeholder { color: var(--muted); }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 6px;
+    }
+    .char-count.warn { color: #f59e0b; }
+
+    .btn-send {
+      width: 100%;
+      background: linear-gradient(90deg, #4f46e5, #0891b2);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+    }
+    .btn-send:hover { opacity: 0.9; box-shadow: 0 6px 24px rgba(99,102,241,0.45); }
+    .btn-send:active { transform: scale(0.99); }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-msg {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 10px;
+      min-height: 20px;
+      font-weight: 600;
+    }
+    .status-msg.ok { color: var(--green); }
+    .status-msg.err { color: var(--red); }
+
+    /* Preview */
+    .preview-wrap {
+      margin-top: 14px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(99,102,241,0.15);
+    }
+    .preview-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(99,102,241,0.1);
+    }
+    .preview-banner {
+      background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(34,211,238,0.75));
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .preview-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.9;
+      flex-shrink: 0;
+    }
+    .preview-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      flex: 1;
+      font-family: var(--font);
+    }
+    .preview-timer {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* History */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .history-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(99,102,241,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .history-msg {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .history-time {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .history-empty {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(244,63,94,0.2);
+      color: rgba(244,63,94,0.6);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); background: rgba(244,63,94,0.06); }
+
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      20%,60%{transform:translateX(-6px)}
+      40%,80%{transform:translateX(4px)}
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      <span>PXCV9T</span>CODES
+    </div>
+    <div class="login-card">
+      <div class="login-title">Панель администратора</div>
+      <div class="login-sub">Введи пароль для доступа</div>
+      <div class="field">
+        <label>Пароль</label>
+        <input type="password" id="pwd-input" placeholder="••••••••••••••" onkeydown="if(e.key==='Enter')login(event)"/>
+      </div>
+      <button class="btn-login" onclick="login()">Войти →</button>
+      <div class="error-msg" id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin-panel">
+    <div class="panel-header fade-in">
+      <div>
+        <div class="panel-title">⚡ Admin Panel</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="panel-badge">● ONLINE</span>
+        <button class="btn-logout" onclick="logout()">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Отправить сообщение -->
+    <div class="panel-card fade-in">
+      <h3>📢 Broadcast — сообщение всем пользователям</h3>
+      <textarea id="msg-input" maxlength="120" placeholder="Введи сообщение... (до 120 символов)" oninput="updatePreview()"></textarea>
+      <div class="char-count" id="char-count">0 / 120</div>
+
+      <!-- Preview -->
+      <div class="preview-wrap">
+        <div class="preview-label">Предпросмотр баннера</div>
+        <div class="preview-banner">
+          <div class="preview-dot"></div>
+          <div class="preview-text" id="preview-text">Текст появится здесь...</div>
+          <div class="preview-timer">11</div>
+        </div>
+      </div>
+
+      <button class="btn-send" id="send-btn" onclick="sendBroadcast()">Отправить всем →</button>
+      <div class="status-msg" id="status-msg"></div>
+    </div>
+
+    <!-- История -->
+    <div class="panel-card fade-in">
+      <h3>🕓 История сообщений</h3>
+      <div class="history-list" id="history-list">
+        <div class="history-empty">Загрузка...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SB_URL = 'https://grjwfvquyjqwxgbbqoog.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdyandmdnF1eWpxd3hnYmJxb29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMzMyNDMsImV4cCI6MjA4ODYwOTI0M30.g9rxngYgwLufv9enCySNGKcO71BoJKwLWSVUcFSRAxk';
+
+    // XOR encoded password
+    const _S = 0x4F;
+    const _P = [27,4,44,124,122,23,120,1,39,59,57,127,24,26];
+    const ADMIN_PWD = _P.map(c => String.fromCharCode(c ^ _S)).join('');
+
+    function login() {
+      const val = document.getElementById('pwd-input').value;
+      const err = document.getElementById('login-error');
+      const inp = document.getElementById('pwd-input');
+
+      if (val === ADMIN_PWD) {
+        document.getElementById('login-screen').style.display = 'none';
+        const panel = document.getElementById('admin-panel');
+        panel.style.display = 'flex';
+        loadHistory();
+      } else {
+        inp.classList.add('error');
+        err.textContent = 'Неверный пароль';
+        setTimeout(() => { inp.classList.remove('error'); inp.value = ''; err.textContent = ''; }, 1500);
+      }
+    }
+
+    document.getElementById('pwd-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+
+    function logout() {
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('pwd-input').value = '';
+    }
+
+    function updatePreview() {
+      const val = document.getElementById('msg-input').value;
+      const preview = document.getElementById('preview-text');
+      const count = document.getElementById('char-count');
+      preview.textContent = val || 'Текст появится здесь...';
+      count.textContent = val.length + ' / 120';
+      count.className = 'char-count' + (val.length > 100 ? ' warn' : '');
+    }
+
+    async function sendBroadcast() {
+      const msg = document.getElementById('msg-input').value.trim();
+      const btn = document.getElementById('send-btn');
+      const status = document.getElementById('status-msg');
+
+      if (!msg) { status.textContent = 'Введи сообщение!'; status.className = 'status-msg err'; return; }
+
+      btn.disabled = true;
+      btn.textContent = '⏳ Отправка...';
+      status.textContent = '';
+
+      try {
+        const res = await fetch(SB_URL + '/rest/v1/broadcast', {
+          method: 'POST',
+          headers: {
+            'apikey': SB_KEY,
+            'Authorization': 'Bearer ' + SB_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ message: msg })
+        });
+
+        if (res.ok || res.status === 201) {
+          status.textContent = '✅ Сообщение отправлено! Появится у всех через ~8 секунд.';
+          status.className = 'status-msg ok';
+          document.getElementById('msg-input').value = '';
+          updatePreview();
+          loadHistory();
+        } else {
+          throw new Error('HTTP ' + res.status);
+        }
+      } catch(e) {
+        status.textContent = '❌ Ошибка: ' + e.message;
+        status.className = 'status-msg err';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Отправить всем →';
+    }
+
+    async function loadHistory() {
+      const list = document.getElementById('history-list');
+      try {
+        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=message,created_at&order=created_at.desc&limit=10', {
+          headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+        });
+        const rows = await res.json();
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+          list.innerHTML = '<div class="history-empty">Сообщений пока не было</div>';
+          return;
+        }
+
+        list.innerHTML = rows.map(r => {
+          const d = new Date(r.created_at);
+          const time = d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+          const date = d.toLocaleDateString('ru', { day: '2-digit', month: '2-digit' });
+          return `<div class="history-item">
+            <div style="flex:1">
+              <div class="history-msg">${r.message}</div>
+              <div class="history-time">${date} в ${time}</div>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) {
+        list.innerHTML = '<div class="history-empty">Ошибка загрузки</div>';
+      }
+    }
+  </script>
+</body>
+</html>
