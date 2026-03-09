@@ -1819,23 +1819,34 @@
       } catch(e) {}
     }
 
+    let _bannerInterval = null;
+
     function showAdminBanner(msg) {
       const banner = document.getElementById('admin-banner');
+      const inner = document.getElementById('admin-banner-inner');
       const text = document.getElementById('admin-banner-text');
       const timer = document.getElementById('admin-banner-timer');
       if (!banner || !msg) return;
+
+      // Сбросить предыдущий таймер если был
+      if (_bannerInterval) { clearInterval(_bannerInterval); _bannerInterval = null; }
+
+      // Сбросить анимацию
+      inner.style.animation = 'none';
+      inner.offsetHeight; // reflow
+      inner.style.animation = 'bannerIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards';
 
       text.textContent = msg;
       banner.style.display = 'block';
 
       let secs = 11;
       timer.textContent = secs;
-      const iv = setInterval(() => {
+      _bannerInterval = setInterval(() => {
         secs--;
         timer.textContent = secs;
         if (secs <= 0) {
-          clearInterval(iv);
-          const inner = document.getElementById('admin-banner-inner');
+          clearInterval(_bannerInterval);
+          _bannerInterval = null;
           inner.style.animation = 'bannerOut 0.35s ease forwards';
           setTimeout(() => { banner.style.display = 'none'; }, 350);
         }
