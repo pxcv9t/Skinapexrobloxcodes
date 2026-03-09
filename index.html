@@ -313,7 +313,12 @@
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
     }
+    /* Прижать code-box к низу карточки */
+    .card .code-box { margin-top: auto; }
+    .card .card-desc { flex: 1; }
     .card::before {
       content: '';
       position: absolute;
@@ -460,33 +465,65 @@
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
+      gap: 0;
+      position: relative;
     }
+    /* Горизонтальная линия между шагами на десктопе */
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), rgba(34,211,238,0.3), transparent);
+      pointer-events: none;
+    }
+    @media (max-width: 768px) { .steps::before { display: none; } }
     .step {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(99,102,241,0.12);
-      border-radius: 16px;
-      padding: 24px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0 20px 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transition: border-color 0.2s, background 0.2s;
-      backdrop-filter: blur(8px);
+      align-items: center;
+      text-align: center;
+      gap: 0;
+      position: relative;
     }
-    .step:hover { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.04); }
-    .step-num {
-      font-size: 11px; font-weight: 700;
-      color: var(--accent-light);
-      letter-spacing: 0.1em;
-      background: var(--accent-dim);
+    .step-circle {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.08);
       border: 1px solid rgba(99,102,241,0.2);
-      border-radius: 6px;
-      padding: 3px 8px;
-      display: inline-block;
-      width: fit-content;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
-    .step-text { font-size: 15px; font-weight: 700; line-height: 1.3; }
+    .step:hover .step-circle {
+      background: rgba(99,102,241,0.15);
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 20px rgba(99,102,241,0.2);
+    }
+    .step-num {
+      font-size: 10px; font-weight: 700;
+      color: var(--accent-light);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .step-text { font-size: 15px; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
     .step-sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    @media (max-width: 768px) {
+      .steps { gap: 32px; }
+      .step { align-items: flex-start; text-align: left; flex-direction: row; gap: 16px; padding: 0; }
+      .step-circle { width: 48px; height: 48px; flex-shrink: 0; margin-bottom: 0; }
+      .step-body { flex: 1; }
+    }
 
     .online-badge {
       display: flex;
@@ -606,8 +643,8 @@
     .card.locked .lock-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(5,5,16,0.75);
-      backdrop-filter: blur(4px);
+      background: rgba(5,5,16,0.92);
+      backdrop-filter: blur(16px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -660,30 +697,6 @@
     .search-input:focus {
       border-color: rgba(99,102,241,0.4);
       background: rgba(99,102,241,0.05);
-    }
-    .copy-all-btn {
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 11px 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(99,102,241,0.2);
-      background: rgba(99,102,241,0.08);
-      color: var(--accent-light);
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .copy-all-btn:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      box-shadow: 0 0 16px rgba(99,102,241,0.3);
-    }
-    .copy-all-btn.done {
-      background: rgba(74,222,128,0.12);
-      color: var(--accent-green);
-      border-color: rgba(74,222,128,0.3);
     }
     .card.hidden { display: none !important; }
     .no-results {
@@ -825,14 +838,30 @@
     }
 
     @media (max-width: 768px) {
-      nav { padding: 14px 20px; }
+      nav {
+        padding: 12px 16px;
+        gap: 8px;
+      }
       .nav-links { display: none; }
+      .nav-logo { font-size: 13px; }
+      .nav-logo-icon { width: 24px; height: 24px; font-size: 12px; }
+      /* На мобиле: lang-toggle компактнее */
+      .lang-toggle { padding: 2px; }
+      .lang-btn { font-size: 11px; padding: 4px 9px; }
+      /* Онлайн-бейдж — убрать текст "online", только число + точка */
+      .online-badge { padding: 4px 10px; font-size: 11px; }
+      .online-text { display: none; }
       section { padding: 72px 20px; }
       .cards-grid { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr; }
       .channel-banner { padding: 28px 24px; }
       footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
       .stats { gap: 28px; }
+      .premium-banner { flex-direction: column; align-items: flex-start; }
+      .premium-input-wrap { width: 100%; }
+      .premium-input { width: 100%; }
+      .codes-toolbar { flex-direction: column; }
+      .search-wrap { width: 100%; }
     }
 </style>
 </head>
@@ -854,7 +883,7 @@
     </div>
     <div class="online-badge">
       <span class="online-dot"></span>
-      <span id="online-count">17</span> online
+      <span id="online-count">17</span><span class="online-text"> online</span>
     </div>
   </nav>
 
@@ -900,12 +929,12 @@
     <div class="premium-banner reveal" id="premium-banner">
       <div class="premium-icon">⚡</div>
       <div class="premium-text">
-        <div class="premium-title" id="premium-title">Премиум доступ — ранние коды</div>
-        <div class="premium-sub" id="premium-sub">Введи код и получи доступ к новым промокодам раньше всех</div>
+        <div class="premium-title" id="premium-title" data-i18n="premium-title">Премиум доступ — ранние коды</div>
+        <div class="premium-sub" id="premium-sub" data-i18n="premium-sub">Введи код и получи доступ к новым промокодам раньше всех</div>
       </div>
       <div class="premium-input-wrap" id="premium-input-wrap">
-        <input class="premium-input" id="premium-code-input" type="text" placeholder="Введи код..."/>
-        <button class="premium-btn" onclick="activatePremium()">Активировать</button>
+        <input class="premium-input" id="premium-code-input" type="text" placeholder="Введи код..." data-i18n-placeholder="premium-input-placeholder"/>
+        <button class="premium-btn" onclick="activatePremium()" data-i18n="premium-btn">Активировать</button>
       </div>
     </div>
 
@@ -921,7 +950,6 @@
         <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input class="search-input" id="search-input" type="text" placeholder="Поиск кода..." oninput="filterCards(this.value)" data-i18n-placeholder="search-placeholder"/>
       </div>
-      <button class="copy-all-btn" onclick="copyAllCodes(this)" data-i18n="copy-all">📋 Скопировать все</button>
     </div>
 
     <!-- TAB: MAIN -->
@@ -1050,13 +1078,13 @@
           <span class="tg-badge">Для всех</span>
         </div>
         <div class="code-box" style="margin-top:16px">
-          <span class="code-value" id="premium-code1-val">SKIN150VIP</span>
+          <span class="code-value" id="premium-code1-val" data-real="SKIN150VIP">••••••••••</span>
           <button class="copy-btn" onclick="copyCode('premium-code1-val', this)">Копировать</button>
         </div>
         <div class="lock-overlay" onclick="document.getElementById('premium-code-input').focus(); document.getElementById('premium-code-input').scrollIntoView({behavior:'smooth', block:'center'})">
           <div class="lock-icon">🔒</div>
-          <div class="lock-text">Только для премиум</div>
-          <div class="lock-sub">Введи код для доступа</div>
+          <div class="lock-text" data-i18n="lock-text">Только для премиум</div>
+          <div class="lock-sub" data-i18n="lock-sub">Введи код для доступа</div>
         </div>
       </div>
 
@@ -1073,13 +1101,13 @@
           <span class="tg-badge">Для всех</span>
         </div>
         <div class="code-box" style="margin-top:16px">
-          <span class="code-value" id="premium-code2-val">VIPBOOST200</span>
+          <span class="code-value" id="premium-code2-val" data-real="VIPBOOST200">••••••••••</span>
           <button class="copy-btn" onclick="copyCode('premium-code2-val', this)">Копировать</button>
         </div>
         <div class="lock-overlay" onclick="document.getElementById('premium-code-input').focus(); document.getElementById('premium-code-input').scrollIntoView({behavior:'smooth', block:'center'})">
           <div class="lock-icon">🔒</div>
-          <div class="lock-text">Только для премиум</div>
-          <div class="lock-sub">Введи код для доступа</div>
+          <div class="lock-text" data-i18n="lock-text">Только для премиум</div>
+          <div class="lock-sub" data-i18n="lock-sub">Введи код для доступа</div>
         </div>
       </div>
 
@@ -1106,24 +1134,55 @@
 
     <div class="steps">
       <div class="step reveal">
-        <span class="step-num">01</span>
-        <div class="step-text" data-i18n="step1-title">Переходи по ссылке</div>
-        <div class="step-sub" data-i18n="step1-desc">Нажми «Получить коды» и установи SkinApe — это займёт меньше минуты.</div>
+        <div class="step-circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+</svg></div>
+        <div class="step-body">
+          <span class="step-num">01</span>
+          <div class="step-text" data-i18n="step1-title">Переходи по ссылке</div>
+          <div class="step-sub" data-i18n="step1-desc">Нажми «Получить коды» и установи SkinApe — это займёт меньше минуты.</div>
+        </div>
       </div>
       <div class="step reveal">
-        <span class="step-num">02</span>
-        <div class="step-text" data-i18n="step2-title">Введи промокод</div>
-        <div class="step-sub" data-i18n="step2-desc">В приложении найди раздел промо-кодов и введи код из секции выше.</div>
+        <div class="step-circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs>
+  <rect x="2" y="6" width="20" height="12" rx="2"/>
+  <line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/>
+  <line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/>
+  <line x1="6" y1="14" x2="6" y2="14"/><line x1="18" y1="14" x2="18" y2="14"/>
+  <line x1="10" y1="14" x2="14" y2="14"/>
+</svg></div>
+        <div class="step-body">
+          <span class="step-num">02</span>
+          <div class="step-text" data-i18n="step2-title">Введи промокод</div>
+          <div class="step-sub" data-i18n="step2-desc">В приложении найди раздел промо-кодов и введи код из секции выше.</div>
+        </div>
       </div>
       <div class="step reveal">
-        <span class="step-num">03</span>
-        <div class="step-text" data-i18n="step3-title">Получи мгновенный бонус</div>
-        <div class="step-sub" data-i18n="step3-desc">Бонус зачисляется сразу — монеты, скины или внутриигровые предметы.</div>
+        <div class="step-circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs>
+  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+</svg></div>
+        <div class="step-body">
+          <span class="step-num">03</span>
+          <div class="step-text" data-i18n="step3-title">Получи мгновенный бонус</div>
+          <div class="step-sub" data-i18n="step3-desc">Бонус зачисляется сразу — монеты, скины или внутриигровые предметы.</div>
+        </div>
       </div>
       <div class="step reveal">
-        <span class="step-num">04</span>
-        <div class="step-text" data-i18n="step4-title">Работает для всех</div>
-        <div class="step-sub" data-i18n="step4-desc">Новый аккаунт или нет — промокод активируется и даёт максимальный бонус.</div>
+        <div class="step-circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="url(#g4)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <defs><linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient></defs>
+  <circle cx="12" cy="12" r="10"/>
+  <circle cx="12" cy="12" r="6"/>
+  <circle cx="12" cy="12" r="2"/>
+</svg></div>
+        <div class="step-body">
+          <span class="step-num">04</span>
+          <div class="step-text" data-i18n="step4-title">Работает для всех</div>
+          <div class="step-sub" data-i18n="step4-desc">Новый аккаунт или нет — промокод активируется и даёт максимальный бонус.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1136,7 +1195,7 @@
         <div class="channel-icon">📢</div>
         <div class="channel-text">
           <div class="channel-title" data-i18n="channel-title">Наш Telegram канал</div>
-          <div class="channel-desc" data-i18n="channel-desc">В канале намного больше промокодов, чем на сайте — эксклюзивные коды, обновления и бонусы выходят там первыми.</div>
+          <div class="channel-desc" data-i18n="channel-desc">В канале намного больше промокодов, чем на сайте. Также регулярно проводятся розыгрыши — премиальные ключи и эксклюзивные промокоды разыгрываются среди подписчиков.</div>
         </div>
         <a href="https://t.me/skinaperoblox" target="_blank" rel="noopener" class="btn btn-purple channel-btn" data-i18n="channel-btn">Перейти в канал →</a>
       </div>
@@ -1173,7 +1232,6 @@
         'codes-title': 'Активируй и получи награду',
         'tab-main': '⭐ Основные',
         'tab-all': '🏷 Все коды',
-        'copy-all': '📋 Скопировать все',
         'search-placeholder': 'Поиск кода...',
         'type-ref': '· Реферал',
         'type-promo': '· Промо',
@@ -1198,7 +1256,7 @@
         'step4-title': 'Работает для всех',
         'step4-desc': 'Новый аккаунт или нет — промокод активируется и даёт максимальный бонус.',
         'channel-title': 'Наш Telegram канал',
-        'channel-desc': 'В канале намного больше промокодов, чем на сайте — эксклюзивные коды, обновления и бонусы выходят там первыми.',
+        'channel-desc': 'В канале намного больше промокодов, чем на сайте. Также регулярно проводятся розыгрыши — премиальные ключи и эксклюзивные промокоды разыгрываются среди подписчиков.',
         'channel-btn': 'Перейти в канал →',
         'tg-freecoins-text': 'Промокод на <span class="tg-highlight">50 монет</span> — <span class="tg-code-inline">FREECOINS50</span>',
         'tg-realbro-text': 'Промокод на <span class="tg-highlight">60 монет</span> — <span class="tg-code-inline">REALBRO</span>',
@@ -1208,6 +1266,12 @@
         'tg-forall': 'Для всех',
         'footer-copy': '© 2025 PXCV9TCODES. Все права защищены.',
         'support': '🛠 Тех. поддержка',
+        'premium-title': 'Премиум доступ — ранние коды',
+        'premium-sub': 'Введи код и получи доступ к новым промокодам раньше всех',
+        'premium-input-placeholder': 'Введи код...',
+        'premium-btn': 'Активировать',
+        'lock-text': 'Только для премиум',
+        'lock-sub': 'Введи код для доступа',
       },
       en: {
         'nav-codes': 'Codes',
@@ -1224,7 +1288,6 @@
         'codes-title': 'Activate & Claim Your Reward',
         'tab-main': '⭐ Featured',
         'tab-all': '🏷 All Codes',
-        'copy-all': '📋 Copy all',
         'search-placeholder': 'Search code...',
         'type-ref': '· Referral',
         'type-promo': '· Promo',
@@ -1249,7 +1312,7 @@
         'step4-title': 'Works for Everyone',
         'step4-desc': 'New account or not — the code activates and delivers the maximum bonus.',
         'channel-title': 'Our Telegram Channel',
-        'channel-desc': 'The channel has way more promo codes than the website — exclusive codes, updates and bonuses drop there first.',
+        'channel-desc': 'The channel has way more promo codes than the website. We also run regular giveaways — premium keys and exclusive promo codes are raffled among subscribers.',
         'channel-btn': 'Join the channel →',
         'tg-freecoins-text': 'Promo code for <span class="tg-highlight">50 coins</span> — <span class="tg-code-inline">FREECOINS50</span>',
         'tg-realbro-text': 'Promo code for <span class="tg-highlight">60 coins</span> — <span class="tg-code-inline">REALBRO</span>',
@@ -1259,6 +1322,12 @@
         'tg-forall': 'For everyone',
         'footer-copy': '© 2025 PXCV9TCODES. All rights reserved.',
         'support': '🛠 Support',
+        'premium-title': 'Premium Access — Early Codes',
+        'premium-sub': 'Enter the key to get early access to new promo codes',
+        'premium-input-placeholder': 'Enter key...',
+        'premium-btn': 'Activate',
+        'lock-text': 'Premium only',
+        'lock-sub': 'Enter key to unlock',
       }
     };
 
@@ -1284,6 +1353,11 @@
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
       });
+      // Сбросить поиск при смене языка
+      const searchInp = document.getElementById('search-input');
+      if (searchInp) { searchInp.value = ''; }
+      document.querySelectorAll('.no-results').forEach(el => el.remove());
+      document.querySelectorAll('.card.hidden').forEach(el => el.classList.remove('hidden'));
     }
 
     function copyCode(id, btn) {
@@ -1300,44 +1374,89 @@
       setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
     }
 
+
     // ─── PREMIUM ─────────────────────────────────────────
-    const PREMIUM_CODE = 'bSqhdvLa8';
+    const _a = 0x1A, _b = 0x55;
+    const _S = _a ^ _b;
+    const _K = [[35, 3, 119, 46, 39, 121, 119, 4, 1], [63, 121, 35, 54, 5, 41, 31, 53, 42], [61, 58, 1, 56, 41, 118, 41, 119], [44, 27, 4, 123, 8, 63, 0, 58, 39, 127], [40, 2, 35, 22, 34, 41, 7, 45], [2, 36, 21, 118, 63, 11, 10, 61, 23, 22], [61, 11, 60, 7, 122, 42, 123, 33, 44], [2, 31, 24, 43, 31, 62, 6, 26, 59], [23, 41, 25, 3, 3, 127, 36, 10, 45], [63, 28, 1, 57, 1, 8, 41, 59, 33, 122], [123, 126, 6, 126, 42, 124, 41, 118, 40, 122], [58, 32, 57, 61, 62, 35, 39, 34, 38, 30], [2, 61, 12, 4, 1, 10, 56, 14, 30, 2], [13, 35, 56, 53, 118, 11, 27, 13, 21, 60], [56, 44, 14, 33, 126, 122, 44, 1], [63, 59, 2, 41, 8, 4, 22, 34, 57, 8], [62, 22, 56, 122, 22, 44, 60, 123, 56, 0], [21, 38, 13, 63, 118, 61, 3, 59], [36, 119, 9, 22, 38, 6, 25, 44, 122, 26], [41, 11, 56, 9, 46, 2, 12, 38, 38, 121], [36, 59, 123, 7, 9, 124, 42, 41], [59, 45, 42, 60, 60, 21, 37, 54, 59], [40, 37, 58, 124, 6, 122, 5, 25, 25], [42, 122, 46, 56, 0, 30, 39, 38, 54, 39], [62, 35, 54, 9, 57, 4, 1, 120, 44, 118]];
+    const _d = k => k.map(c => String.fromCharCode(c ^ _S)).join('');
+    const PREMIUM_CODES = _K.map(_d);
     let isPremium = false;
+
+    // Reveal real codes in locked cards
+    function revealCodes() {
+      document.querySelectorAll('[data-real]').forEach(el => {
+        el.textContent = el.getAttribute('data-real');
+      });
+    }
+
+    function unlockPremium() {
+      isPremium = true;
+      revealCodes();
+      const banner = document.getElementById('premium-banner');
+      document.querySelectorAll('.lock-overlay').forEach(el => {
+        el.style.animation = 'fadeOut 0.4s ease forwards';
+        setTimeout(() => el.remove(), 400);
+      });
+      document.querySelectorAll('.card.locked').forEach(c => c.classList.remove('locked'));
+      banner.classList.add('active');
+      const ptEl = document.getElementById('premium-title');
+      const psEl = document.getElementById('premium-sub');
+      ptEl.removeAttribute('data-i18n'); psEl.removeAttribute('data-i18n');
+      ptEl.textContent = currentLang === 'ru' ? '✅ Премиум активирован!' : '✅ Premium activated!';
+      psEl.textContent = currentLang === 'ru' ? 'Ранние коды разблокированы — добро пожаловать 🎉' : 'Early codes unlocked — welcome 🎉';
+      document.getElementById('premium-input-wrap').innerHTML =
+        '<span style="font-size:13px;color:#4ade80;font-weight:700">Доступ открыт ⚡</span>';
+    }
+
+    function showUsed() {
+      const banner = document.getElementById('premium-banner');
+      banner.style.borderColor = 'rgba(244,63,94,0.3)';
+      banner.style.background = 'linear-gradient(135deg,rgba(244,63,94,0.06),rgba(244,63,94,0.02))';
+      document.getElementById('premium-icon') && (document.getElementById('premium-banner').querySelector('.premium-icon').textContent = '🔴');
+      const ptEl2 = document.getElementById('premium-title');
+      const psEl2 = document.getElementById('premium-sub');
+      ptEl2.removeAttribute('data-i18n'); psEl2.removeAttribute('data-i18n');
+      ptEl2.textContent = currentLang === 'ru' ? '🔴 Ключ уже использован' : '🔴 Key already used';
+      psEl2.innerHTML = currentLang === 'ru'
+        ? 'Этот ключ был активирован другим пользователем. Следи за <a href="https://t.me/skinaperoblox" target="_blank" style="color:#818cf8;font-weight:700">розыгрышами в Telegram</a> — там разыгрываются новые ключи.'
+        : 'This key was already activated. Watch for <a href="https://t.me/skinaperoblox" target="_blank" style="color:#818cf8;font-weight:700">giveaways in Telegram</a> — new keys are raffled there.';
+      document.getElementById('premium-input-wrap').innerHTML =
+        '<a href="https://t.me/skinaperoblox" target="_blank" style="font-size:13px;font-weight:700;color:#818cf8;text-decoration:none;padding:9px 18px;border:1px solid rgba(99,102,241,0.3);border-radius:10px;background:rgba(99,102,241,0.08)">→ Перейти в канал</a>';
+    }
 
     function activatePremium() {
       const input = document.getElementById('premium-code-input');
-      const banner = document.getElementById('premium-banner');
       const val = input.value.trim();
 
-      if (val === PREMIUM_CODE) {
-        isPremium = true;
-
-        // Unlock cards
-        document.querySelectorAll('.lock-overlay').forEach(el => {
-          el.style.animation = 'fadeOut 0.4s ease forwards';
-          setTimeout(() => el.remove(), 400);
-        });
-        document.querySelectorAll('.card.locked').forEach(c => c.classList.remove('locked'));
-
-        // Update banner to success state
-        banner.classList.add('active');
-        document.getElementById('premium-title').textContent = '✅ Премиум активирован!';
-        document.getElementById('premium-sub').textContent = 'Ранние коды разблокированы — добро пожаловать 🎉';
-        document.getElementById('premium-input-wrap').innerHTML =
-          '<span style="font-size:13px;color:#4ade80;font-weight:700">Доступ открыт ⚡</span>';
-
-      } else {
-        // Shake animation on wrong code
+      if (!PREMIUM_CODES.includes(val)) {
         input.style.borderColor = 'rgba(244,63,94,0.6)';
         input.style.animation = 'shake 0.4s ease';
         input.value = '';
-        input.placeholder = 'Неверный код...';
+        input.placeholder = currentLang === 'ru' ? 'Неверный код...' : 'Wrong code...';
         setTimeout(() => {
           input.style.borderColor = '';
           input.style.animation = '';
-          input.placeholder = 'Введи код...';
+          input.placeholder = currentLang === 'ru' ? 'Введи код...' : 'Enter code...';
         }, 1500);
+        return;
       }
+
+      // Правильный код — проверяем через window.storage (persistent)
+      (async () => {
+        try {
+          const result = await window.storage.get('premium_used_' + val);
+          if (result && result.value === '1') {
+            showUsed();
+          } else {
+            await window.storage.set('premium_used_' + val, '1');
+            unlockPremium();
+          }
+        } catch(e) {
+          // storage недоступен — разблокируем без проверки
+          unlockPremium();
+        }
+      })();
     }
 
     // allow Enter key
@@ -1347,11 +1466,11 @@
 
     // ─── FAKE ONLINE ─────────────────────────────────────
     const onlineEl = document.getElementById('online-count');
-    let onlineNum = Math.floor(Math.random() * 8) + 13; // 13-20 при загрузке
+    let onlineNum = Math.floor(Math.random() * 6) + 7; // 7-12 при загрузке
     onlineEl.textContent = onlineNum;
     setInterval(() => {
       const delta = Math.random() < 0.5 ? 1 : -1;
-      onlineNum = Math.min(24, Math.max(10, onlineNum + delta));
+      onlineNum = Math.min(14, Math.max(5, onlineNum + delta));
       onlineEl.textContent = onlineNum;
     }, Math.random() * 4000 + 3000); // каждые 3-7 сек
 
@@ -1376,38 +1495,13 @@
         if (!noRes) {
           noRes = document.createElement('div');
           noRes.className = 'no-results';
-          noRes.textContent = currentLang === 'ru' ? 'Ничего не найдено' : 'Nothing found';
+          noRes.setAttribute('data-nores', '1');
+          noRes.textContent = currentLang === 'ru' ? 'Ничего не найдено 🔍' : 'Nothing found 🔍';
           activeGrid.appendChild(noRes);
         }
       } else {
         if (noRes) noRes.remove();
       }
-    }
-
-    // ─── COPY ALL ────────────────────────────────────────
-    function copyAllCodes(btn) {
-      const activeGrid = document.getElementById('tab-main').style.display !== 'none'
-        ? document.getElementById('tab-main')
-        : document.getElementById('tab-all');
-
-      const codes = [];
-      activeGrid.querySelectorAll('.code-value').forEach(el => {
-        const val = el.textContent.trim();
-        if (val) codes.push(val);
-      });
-      const text = codes.join('\n');
-
-      navigator.clipboard.writeText(text).catch(() => {
-        const ta = document.createElement('textarea');
-        ta.value = text; document.body.appendChild(ta);
-        ta.select(); document.execCommand('copy');
-        document.body.removeChild(ta);
-      });
-
-      const original = btn.textContent;
-      btn.textContent = currentLang === 'ru' ? '✅ Всё скопировано!' : '✅ All copied!';
-      btn.classList.add('done');
-      setTimeout(() => { btn.textContent = original; btn.classList.remove('done'); }, 2500);
     }
 
     // ─── CLEAR SEARCH ON TAB SWITCH ──────────────────────
