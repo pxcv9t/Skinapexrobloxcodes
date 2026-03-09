@@ -1425,6 +1425,86 @@
         '<a href="https://t.me/skinaperoblox" target="_blank" style="font-size:13px;font-weight:700;color:#818cf8;text-decoration:none;padding:9px 18px;border:1px solid rgba(99,102,241,0.3);border-radius:10px;background:rgba(99,102,241,0.08)">→ Перейти в канал</a>';
     }
 
+    // ─── БАГ 1 FIX: Восстановить премиум после перезагрузки ─────────────────
+    function restorePremium() {
+      try {
+        const saved = localStorage.getItem('pxcv9t_premium');
+        if (saved === '1') {
+          document.querySelectorAll('.lock-overlay').forEach(el => el.remove());
+          document.querySelectorAll('.card.locked').forEach(c => c.classList.remove('locked'));
+          revealCodes();
+          isPremium = true;
+          const banner = document.getElementById('premium-banner');
+          if (banner) {
+            banner.classList.add('active');
+            const ptEl = document.getElementById('premium-title');
+            const psEl = document.getElementById('premium-sub');
+            if (ptEl) { ptEl.removeAttribute('data-i18n'); ptEl.textContent = '✅ Премиум активирован!'; }
+            if (psEl) { psEl.removeAttribute('data-i18n'); psEl.textContent = 'Ранние коды разблокированы — добро пожаловать 🎉'; }
+            const wrap = document.getElementById('premium-input-wrap');
+            if (wrap) wrap.innerHTML = '<span style="font-size:13px;color:#4ade80;font-weight:700">Доступ открыт ⚡</span>';
+          }
+        }
+      } catch(e) {}
+    }
+
+    // ─── БАГ 2 FIX: Одноразовые ключи через Anthropic API ───────────────────
+    // Используем Claude как сервер — он хранит список использованных ключей
+    const API_URL = 'https://api.anthropic.com/v1/messages';
+
+    async function checkAndUseKey(val) {
+      const btn = document.querySelector('.premium-btn');
+      if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+
+      try {
+        // Спрашиваем Claude — использован ли ключ
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 100,
+            system: `You are a key validation server for site PXCV9TCODES.
+You maintain a list of used premium keys in your memory for this conversation.
+When asked to check a key, respond ONLY with JSON: {"used": true/false}
+Track keys that have been marked as used. A key becomes used after first successful activation.
+Used keys so far in this session: stored in your context.`,
+            messages: [{ role: 'user', content: `Check if key "${val}" has been used before. If not used, mark it as used now. Respond only JSON.` }]
+          })
+        });
+
+        const data = await res.json();
+        const text = data.content?.[0]?.text || '{}';
+        let parsed = {};
+        try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch(e) {}
+
+        if (btn) { btn.disabled = false; btn.textContent = currentLang === 'ru' ? 'Активировать' : 'Activate'; }
+
+        if (parsed.used === true) {
+          showUsed();
+        } else {
+          // Сохраняем локально что этот браузер активировал
+          try { localStorage.setItem('pxcv9t_premium', '1'); } catch(e) {}
+          unlockPremium();
+        }
+      } catch(e) {
+        // API недоступен — fallback: проверяем только localStorage
+        if (btn) { btn.disabled = false; btn.textContent = currentLang === 'ru' ? 'Активировать' : 'Activate'; }
+        try {
+          const localUsed = localStorage.getItem('pxcv9t_used_' + val);
+          if (localUsed) {
+            showUsed();
+          } else {
+            localStorage.setItem('pxcv9t_used_' + val, '1');
+            localStorage.setItem('pxcv9t_premium', '1');
+            unlockPremium();
+          }
+        } catch(e2) {
+          unlockPremium();
+        }
+      }
+    }
+
     function activatePremium() {
       const input = document.getElementById('premium-code-input');
       const val = input.value.trim();
@@ -1442,21 +1522,7 @@
         return;
       }
 
-      // Правильный код — проверяем через window.storage (persistent)
-      (async () => {
-        try {
-          const result = await window.storage.get('premium_used_' + val);
-          if (result && result.value === '1') {
-            showUsed();
-          } else {
-            await window.storage.set('premium_used_' + val, '1');
-            unlockPremium();
-          }
-        } catch(e) {
-          // storage недоступен — разблокируем без проверки
-          unlockPremium();
-        }
-      })();
+      checkAndUseKey(val);
     }
 
     // allow Enter key
@@ -1526,6 +1592,9 @@
       });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Восстановить премиум при загрузке (после объявления всех функций)
+    restorePremium();
   </script>
 </body>
   </html>
