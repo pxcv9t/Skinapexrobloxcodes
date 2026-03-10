@@ -474,7 +474,7 @@
     const RAINBOW_CHECK = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:4px"><defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="25%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#4ade80"/><stop offset="75%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#rg1)"/><polyline points="7 12.5 10.5 16 17 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
     function senderBadge(name) {
-      return '<span style="display:inline-flex;align-items:center;opacity:0.9;font-size:11px;font-weight:700;margin-right:8px;letter-spacing:0.06em;text-transform:uppercase;">' + RAINBOW_CHECK + name + '</span>';
+      return '<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;margin-right:8px;letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 0 10px rgba(255,255,255,0.3);">' + name + RAINBOW_CHECK + '</span>';
     }
 
     function updatePreview() {
