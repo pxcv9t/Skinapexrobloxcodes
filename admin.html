@@ -329,6 +329,16 @@
       white-space: nowrap;
       margin-top: 2px;
     }
+    .hsender {
+      font-size: 10px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f43f5e, #f59e0b, #4ade80, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
     .history-empty {
       font-size: 13px;
       color: var(--muted);
@@ -395,6 +405,10 @@
     <!-- Отправить сообщение -->
     <div class="panel-card fade-in">
       <h3>📢 Broadcast — сообщение всем пользователям</h3>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Псевдоним (от кого)</label>
+        <input type="text" id="sender-input" maxlength="20" placeholder="Например: Admin, Moder, Owner..." oninput="updatePreview()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(99,102,241,0.18);border-radius:10px;padding:10px 14px;font-family:var(--font);font-size:14px;color:var(--text);outline:none;width:100%;"/>
+      </div>
       <textarea id="msg-input" maxlength="120" placeholder="Введи сообщение... (до 120 символов)" oninput="updatePreview()"></textarea>
       <div class="char-count" id="char-count">0 / 120</div>
 
@@ -457,11 +471,24 @@
       document.getElementById('pwd-input').value = '';
     }
 
+    const RAINBOW_CHECK = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:4px"><defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="25%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#4ade80"/><stop offset="75%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#rg1)"/><polyline points="7 12.5 10.5 16 17 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    function senderBadge(name) {
+      return '<span style="display:inline-flex;align-items:center;opacity:0.9;font-size:11px;font-weight:700;margin-right:8px;letter-spacing:0.06em;text-transform:uppercase;">' + RAINBOW_CHECK + name + '</span>';
+    }
+
     function updatePreview() {
       const val = document.getElementById('msg-input').value;
       const preview = document.getElementById('preview-text');
       const count = document.getElementById('char-count');
-      preview.textContent = val || 'Текст появится здесь...';
+      const senderEl = document.getElementById('sender-input');
+      const senderVal = senderEl ? senderEl.value.trim() : '';
+
+      if (senderVal) {
+        preview.innerHTML = senderBadge(senderVal) + (val || 'Текст появится здесь...');
+      } else {
+        preview.textContent = val || 'Текст появится здесь...';
+      }
       count.textContent = val.length + ' / 120';
       count.className = 'char-count' + (val.length > 100 ? ' warn' : '');
     }
@@ -471,6 +498,7 @@
       const btn = document.getElementById('send-btn');
       const status = document.getElementById('status-msg');
 
+      const sender = document.getElementById('sender-input').value.trim();
       if (!msg) { status.textContent = 'Введи сообщение!'; status.className = 'status-msg err'; return; }
 
       btn.disabled = true;
@@ -486,7 +514,7 @@
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
-          body: JSON.stringify({ message: msg })
+          body: JSON.stringify({ message: msg, sender: sender || 'Admin' })
         });
 
         if (res.ok || res.status === 201) {
@@ -510,7 +538,7 @@
     async function loadHistory() {
       const list = document.getElementById('history-list');
       try {
-        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=message,created_at&order=created_at.desc&limit=10', {
+        const res = await fetch(SB_URL + '/rest/v1/broadcast?select=id,message,sender,created_at&order=created_at.desc&limit=10', {
           headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
         });
         const rows = await res.json();
@@ -526,7 +554,7 @@
           const date = d.toLocaleDateString('ru', { day: '2-digit', month: '2-digit' });
           return `<div class="history-item">
             <div style="flex:1">
-              <div class="history-msg">${r.message}</div>
+              <div class="history-msg">${r.sender ? senderBadge(r.sender) : ''}${r.message}</div>
               <div class="history-time">${date} в ${time}</div>
             </div>
           </div>`;
